@@ -1,0 +1,86 @@
+.heading {
+  font-size: 16px;
+  color: #fff;
+  font-weight: 600;
+}
+.subheading {
+  font-size: 14px;
+  color: #fff;
+  margin: 10px 0px;
+}
+.modes {
+  display: flex;
+  justify-content: left;
+  gap: 10px;
+}
+.modes button {
+  background-color: transparent;
+  border: 1px solid grey;
+  padding: 10px;
+  border-radius: 5px;
+  color: #fff;
+  margin-top: 10px;
+}
+.modes button:hover,
+.modes button:active {
+  background-color: var(--lightGreen);
+}
+.inputBox {
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+  padding: 7px;
+}
+.searchResults {
+  display: flex;
+  justify-content: flex-start;
+  color: grey;
+  border: 1px solid grey;
+  padding: 10px;
+  border-radius: 10px;
+  max-height: 180px;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+.searchListul {
+  list-style: none;
+  width: 100%;
+}
+.searchListul li {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 5px;
+  box-sizing: border-box;
+}
+
+.keyName {
+  font-size: 14px;
+  color: #fff;
+  margin-right: 10px;
+}
+
+.response {
+  font-size: 12px;
+  color: grey;
+  flex: 1;
+  word-break: break-word;
+}
+
+.addButton {
+  background-color: transparent;
+  font-size: 16px;
+  border: none;
+  color: var(--lightGreen);
+  cursor: pointer;
+  text-align: center;
+}
+.showArraycheck {
+  font-size: 12px;
+  margin-top: 15px;
+  align-items: center;
+  margin-right: 5px;
+}

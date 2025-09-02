@@ -12,13 +12,25 @@ interface PopupProps {
   onClose: () => void;
 }
 
-// You can replace this with a more specific API response type if needed
 type ApiResponse = Record<string, any>;
 
 const AddWidgetDialog: React.FC<PopupProps> = ({ open, onClose }) => {
   const [apiUrl, setApiUrl] = React.useState<string>("");
   const [apiResult, setApiResult] = React.useState<ApiResponse | null>(null);
   const [error, setError] = React.useState<string>("");
+  const [showAlert, setShowAlert] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    setShowAlert(true);
+  }, [apiResult]);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowAlert(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [apiResult]);
 
   const checkAPICall = async (): Promise<void> => {
     try {
@@ -91,7 +103,7 @@ const AddWidgetDialog: React.FC<PopupProps> = ({ open, onClose }) => {
                 </button>
               </div>
 
-              {apiResult && (
+              {apiResult && showAlert && (
                 <div className={classes.alertMessage}>
                   API connection successful!
                 </div>
@@ -99,7 +111,7 @@ const AddWidgetDialog: React.FC<PopupProps> = ({ open, onClose }) => {
             </div>
 
             <label>Refresh Interval (seconds)</label>
-            <input type="number" defaultValue={30} />
+            <input type="number" defaultValue={30} readOnly />
           </div>
 
           {error && (
@@ -110,6 +122,7 @@ const AddWidgetDialog: React.FC<PopupProps> = ({ open, onClose }) => {
 
           {apiResult && <DisplayFieldSelectors response={apiResult} />}
 
+          <div className={classes.subheading}>API Response</div>
           {apiResult && (
             <pre
               style={{
