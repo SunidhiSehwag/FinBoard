@@ -1,0 +1,26 @@
+.emptyScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20vh;
+}
+.logo {
+  border: 1px solid grey;
+  border-radius: 50%;
+  padding: 20px;
+  opacity: 0.4;
+}
+.heading {
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+.subheading {
+  font-size: 15px;
+  font-weight: 500;
+  color: grey;
+  margin-top: 10px;
+  max-width: 30vw;
+  text-align: center;
+}

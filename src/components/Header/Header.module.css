@@ -1,0 +1,39 @@
+.header {
+  height: 40px;
+  background-color: var(--headerBlack);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px;
+}
+.addButton {
+  background-color: var(--lightGreen);
+  color: #fff;
+  font-size: 14px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+}
+.logo {
+  height: 35px;
+  width: 35px;
+  border: none;
+  border-radius: 5px;
+}
+.companyName {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.heading {
+  font-size: 20px;
+  color: #fff;
+  font-weight: 600;
+}
+.bottomContent {
+  font-size: 12px;
+  color: grey;
+  margin-top: 4px;
+}
