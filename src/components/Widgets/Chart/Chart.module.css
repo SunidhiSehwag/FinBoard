@@ -1,0 +1,13 @@
+.chartHeading {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid grey;
+  min-width: 350px;
+  margin-bottom: 10px;
+}
+.deleteButton {
+  background-color: transparent;
+  border: none;
+}

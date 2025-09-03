@@ -1,107 +1,21 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { DisplayFieldSelectorsProps } from "./types";
+import { flattenObject, filterNestedObject } from "./utils";
+import NestedFieldRenderer from "./NestedFieldRenderer";
+import { addField } from "@/store/slices/widgetSlice";
 import classes from "./DisplayFieldSelectors.module.css";
-
-const flattenObject = (
-  obj: Record<string, any>,
-  parentKey = ""
-): Record<string, string | number> => {
-  let result: Record<string, string | number> = {};
-
-  for (const key in obj) {
-    const newKey = parentKey ? `${parentKey}.${key}` : key;
-
-    if (typeof obj[key] === "object" && obj[key] !== null) {
-      result = { ...result, ...flattenObject(obj[key], newKey) };
-    } else {
-      result[newKey] = obj[key];
-    }
-  }
-
-  return result;
-};
-
-// Recursive search filter
-const filterNestedObject = (
-  obj: Record<string, any>,
-  searchTerm: string
-): Record<string, any> | null => {
-  const lower = searchTerm.toLowerCase();
-  let hasMatch = false;
-  const result: Record<string, any> = {};
-
-  for (const [key, value] of Object.entries(obj)) {
-    if (typeof value === "object" && value !== null) {
-      const filteredChild = filterNestedObject(value, searchTerm);
-      if (filteredChild && Object.keys(filteredChild).length > 0) {
-        result[key] = filteredChild;
-        hasMatch = true;
-      }
-    } else if (
-      key.toLowerCase().includes(lower) ||
-      String(value).toLowerCase().includes(lower)
-    ) {
-      result[key] = value;
-      hasMatch = true;
-    }
-  }
-
-  return hasMatch ? result : null;
-};
-
-// Recursive renderer for nested objects
-const renderNestedObject = (
-  obj: Record<string, any>,
-  parentKey = "",
-  onAdd: (key: string, value: any) => void,
-  displayArray = false
-) => {
-  return (
-    <ul className={classes.searchListul}>
-      {Object.entries(obj).map(([key, value]) => {
-        const fullKey = parentKey ? `${parentKey}.${key}` : key;
-        return (
-          <li key={fullKey}>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <div className={classes.keyName}>{fullKey}</div>
-              {typeof value === "object" && value !== null ? (
-                <>
-                  <button
-                    className={classes.addButton}
-                    onClick={() => onAdd(fullKey, value)}
-                  >
-                    +
-                  </button>
-                  {renderNestedObject(value, fullKey, onAdd, displayArray)}
-                </>
-              ) : (
-                <>
-                  <div className={classes.response}>{value}</div>
-                  {!displayArray && ( // ❌ Don't show + for primitives in table mode
-                    <button
-                      className={classes.addButton}
-                      onClick={() => onAdd(fullKey, value)}
-                    >
-                      +
-                    </button>
-                  )}
-                </>
-              )}
-            </div>
-          </li>
-        );
-      })}
-    </ul>
-  );
-};
 
 const DisplayFieldSelectors: React.FC<DisplayFieldSelectorsProps> = ({
   response,
+  selectedItems,
+  setSelectedItems,
+  displayMode,
+  setDisplayMode,
+  widgetId,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedItems, setSelectedItems] = useState<
-    Record<string, string | number | object>
-  >({});
-  const [displayArray, setDisplayArray] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   if (!response) return null;
 
@@ -114,21 +28,15 @@ const DisplayFieldSelectors: React.FC<DisplayFieldSelectorsProps> = ({
       String(flatResponse[key]).toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Filter nested object when in "array mode"
-  const nestedFiltered =
-    searchTerm.trim() && displayArray
-      ? filterNestedObject(response, searchTerm)
-      : response;
+  const nestedFiltered = searchTerm.trim()
+    ? filterNestedObject(response, searchTerm)
+    : response;
 
-  // Add to selected
   const handleAdd = (key: string, value: any) => {
-    setSelectedItems((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+    setSelectedItems((prev) => ({ ...prev, [key]: value }));
+    dispatch(addField({ id: widgetId, field: key, value })); // store in Redux
   };
 
-  // Remove from selected
   const handleRemove = (key: string) => {
     setSelectedItems((prev) => {
       const updated = { ...prev };
@@ -143,9 +51,15 @@ const DisplayFieldSelectors: React.FC<DisplayFieldSelectorsProps> = ({
 
       <div className={classes.subheading}>Display Mode</div>
       <div className={classes.modes}>
-        <button>Card</button>
-        <button>Chart</button>
-        <button>Table</button>
+        {["card", "chart", "table"].map((mode) => (
+          <button
+            key={mode}
+            style={{ fontWeight: displayMode === mode ? "bold" : "normal" }}
+            onClick={() => setDisplayMode(mode as "card" | "chart" | "table")}
+          >
+            {mode.charAt(0).toUpperCase() + mode.slice(1)}
+          </button>
+        ))}
       </div>
 
       <div className={classes.subheading}>Search Fields</div>
@@ -158,20 +72,23 @@ const DisplayFieldSelectors: React.FC<DisplayFieldSelectorsProps> = ({
       />
       <input
         type="checkbox"
-        checked={displayArray}
-        onChange={(e) => setDisplayArray(e.target.checked)}
+        checked={displayMode === "table"}
+        onChange={(e) => setDisplayMode(e.target.checked ? "table" : "card")}
         className={classes.showArraycheck}
       />
       <label className={classes.showArraycheck}>
         Show array (only for table)
       </label>
 
-      {/* Search Feature */}
       <div className={classes.subheading}>Available Fields</div>
       <div className={classes.searchResults}>
-        {displayArray ? (
+        {displayMode === "table" ? (
           nestedFiltered ? (
-            renderNestedObject(nestedFiltered, "", handleAdd, displayArray)
+            <NestedFieldRenderer
+              obj={nestedFiltered}
+              onAdd={handleAdd}
+              displayArray
+            />
           ) : (
             <div>No matching results</div>
           )
@@ -197,7 +114,6 @@ const DisplayFieldSelectors: React.FC<DisplayFieldSelectorsProps> = ({
         )}
       </div>
 
-      {/* Selected Fields */}
       <div className={classes.subheading}>Selected Fields</div>
       <div className={classes.searchResults}>
         {Object.keys(selectedItems).length > 0 ? (
@@ -228,9 +144,5 @@ const DisplayFieldSelectors: React.FC<DisplayFieldSelectorsProps> = ({
     </div>
   );
 };
-
-interface DisplayFieldSelectorsProps {
-  response: Record<string, any> | null;
-}
 
 export default DisplayFieldSelectors;

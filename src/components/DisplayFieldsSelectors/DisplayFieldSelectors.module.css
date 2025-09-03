@@ -22,7 +22,7 @@
   margin-top: 10px;
 }
 .modes button:hover,
-.modes button:active {
+.modes button:focus {
   background-color: var(--lightGreen);
 }
 .inputBox {

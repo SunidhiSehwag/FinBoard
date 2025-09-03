@@ -1,6 +1,7 @@
 .dailogbox {
   background-color: var(--headerBlack);
   color: #fff;
+  border: 2px solid grey;
 }
 .title {
   border-bottom: 1px solid grey;
@@ -33,7 +34,6 @@
 .inputLabels {
   display: flex;
   flex-direction: column;
-  width: 500px;
   padding: 20px;
 }
 .inputLabels label {

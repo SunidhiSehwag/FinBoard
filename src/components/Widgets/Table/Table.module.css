@@ -1,0 +1,27 @@
+.tableHeading {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid grey;
+  min-width: 300px;
+}
+.RowHead th {
+  border-bottom: 1px solid grey;
+}
+.deleteButton {
+  background-color: transparent;
+  border: none;
+}
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 10px 15px;
+  font-size: 16px;
+}
+
+.table th,
+.table td {
+  padding: 8px 16px;
+  text-align: left;
+}

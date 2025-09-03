@@ -1,12 +1,16 @@
 "use client";
-import Image from "next/image";
-import classes from "./Header.module.css";
-import { finBoardIcon } from "@/helpers/images";
 import { useState } from "react";
+import Image from "next/image";
+import { useSelector } from "react-redux";
+
+import { RootState } from "@/store";
+import { finBoardIcon } from "@/helpers/images";
 import AddWidgetDialog from "../AddWidgetDialog";
 
+import classes from "./Header.module.css";
+
 const Header = () => {
-  const count = 0;
+  const count = useSelector((state: RootState) => state.widgets.widgets.length);
   const [addWidgetActive, setAddWidgetActive] = useState(false);
 
   const addButtonClickHandler = () => {

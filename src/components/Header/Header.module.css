@@ -37,3 +37,11 @@
   color: grey;
   margin-top: 4px;
 }
+@media (max-width: 500px) {
+  .heading {
+    font-size: 15px;
+  }
+  .addButton {
+    padding: 10px;
+  }
+}
